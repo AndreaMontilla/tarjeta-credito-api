@@ -1,25 +1,18 @@
-package com.eldar.tarjetascredito;
+package com.eldar.tarjetascredito.model;
 
 import com.eldar.tarjetascredito.exception.ConstantsError;
-import com.eldar.tarjetascredito.exception.TarjetaCreditoException;
-import com.eldar.tarjetascredito.model.OperationResponse;
 import com.eldar.tarjetascredito.util.MarcaTarjeta;
 
 import java.time.LocalDate;
 
-public class TarjetaCredito {
-    public static final double TASA_MAXIMA = 5.0;
-    public static final double TASA_MINIMA = 0.3;
-    public static final int OPERACION_MAXIMA = 1000;
-    public static final int OPERACION_MINIMA = 0;
-    // Constantes para las tasas de cada marca
-    private static final double TASA_NARA = 0.5;
-    private static final double TASA_AMEX = 0.1;
+import static com.eldar.tarjetascredito.util.TarjetaConstantes.*;
 
-    private MarcaTarjeta marca;
-    private String numeroTarjeta;
-    private String cardholder;
-    private LocalDate fechaVencimiento;
+public class TarjetaCredito {
+
+    private final MarcaTarjeta marca;
+    private final String numeroTarjeta;
+    private final String cardholder;
+    private final LocalDate fechaVencimiento;
 
     public TarjetaCredito(MarcaTarjeta marca, String numeroTarjeta, String cardholder, LocalDate fechaVencimiento) {
         this.marca = marca;
@@ -45,12 +38,8 @@ public class TarjetaCredito {
     }
 
     public String obtenerInformacionTarjeta() {
-        return "Marca: " + marca.getMarca().toUpperCase() + "\nNúmero de Tarjeta: " + numeroTarjeta + "\nCardholder: " + cardholder
+        return "Marca: " + marca.getMarca() + "\nNúmero de Tarjeta: " + numeroTarjeta + "\nCardholder: " + cardholder
                 + "\nFecha de Vencimiento: " + fechaVencimiento;
-    }
-
-    public boolean esOperacionValida(double montoOperacion) {
-        return montoOperacion > OPERACION_MINIMA && montoOperacion < OPERACION_MAXIMA;
     }
 
     public boolean esValidaParaOperar() {
@@ -72,15 +61,6 @@ public class TarjetaCredito {
         return Math.round(tasa * 10d) / 10d;
     }
 
-    public OperationResponse obtenerOperationResponse(double importe) throws TarjetaCreditoException {
-        if (!esOperacionValida(importe)) {
-            throw new TarjetaCreditoException(ConstantsError.CODE_ERROR_INVALID_AMOUNT);
-        }
-        double tasa = obtenerTasa();
-        double importeFinal = Math.round((importe * (1 + tasa / 100)) * 10d) / 10d;
-        double recargo = importeFinal - importe;
-        return new OperationResponse(marca, tasa, recargo, importe, importeFinal);
-    }
 
     private double calcularTasa() {
         LocalDate fechaActual = LocalDate.now();
