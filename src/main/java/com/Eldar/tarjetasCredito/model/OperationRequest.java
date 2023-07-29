@@ -1,7 +1,7 @@
 package com.eldar.tarjetascredito.model;
 
 public class OperationRequest {
-    private String marca;
+    private TarjetaCredito tarjeta;
     private double importe;
 
     public double getImporte() {
@@ -12,11 +12,11 @@ public class OperationRequest {
         this.importe = importe;
     }
 
-    public String getMarca() {
-        return marca;
+    public TarjetaCredito getTarjeta() {
+        return tarjeta;
     }
 
-    public void setMarca(String marca) {
-        this.marca = marca;
+    public void setTarjeta(TarjetaCredito tarjeta) {
+        this.tarjeta = tarjeta;
     }
 }

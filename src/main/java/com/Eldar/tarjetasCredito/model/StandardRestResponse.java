@@ -1,32 +1,27 @@
 package com.eldar.tarjetascredito.model;
 
-import com.eldar.tarjetascredito.exception.TarjetaCreditoException;
+public class StandardRestResponse<T, E> {
+    private T data;
+    private E error;
 
-public class StandardRestResponse<OperationResponse> {
-    private OperationResponse data;
-    private TarjetaCreditoException error;
-
-    public StandardRestResponse(OperationResponse data) {
+    public StandardRestResponse(T data, E error) {
         this.data = data;
-    }
-
-    public StandardRestResponse(TarjetaCreditoException error) {
         this.error = error;
     }
 
-    public OperationResponse getData() {
+    public T getData() {
         return data;
     }
 
-    public void setData(OperationResponse data) {
+    public void setData(T data) {
         this.data = data;
     }
 
-    public TarjetaCreditoException getError() {
+    public E getError() {
         return error;
     }
 
-    public void setError(TarjetaCreditoException error) {
+    public void setError(E error) {
         this.error = error;
     }
 }

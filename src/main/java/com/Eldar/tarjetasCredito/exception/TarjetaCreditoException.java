@@ -1,12 +1,7 @@
 package com.eldar.tarjetascredito.exception;
 
 public class TarjetaCreditoException extends Exception{
-    private String code;
-
-    public TarjetaCreditoException(String message, String code) {
-        super(message);
-        this.code = code;
-    }
+    private final String code;
 
     public TarjetaCreditoException(ConstantsError error) {
         super(error.getDescripcion());
