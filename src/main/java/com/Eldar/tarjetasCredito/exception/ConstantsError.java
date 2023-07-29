@@ -1,4 +1,4 @@
-package exception;
+package com.eldar.tarjetascredito.exception;
 
 public enum ConstantsError {
     CODE_ERROR_MISSING_BRAND("MISSING_BRAND", "Marca de tarjeta no especificada"), //BIEN
@@ -20,5 +20,8 @@ public enum ConstantsError {
 
     public String getDescripcion() {
         return descripcion;
+    }
+    public TarjetaCreditoException getError(){
+        return new TarjetaCreditoException(this);
     }
 }

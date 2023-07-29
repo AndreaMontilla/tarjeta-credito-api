@@ -1,4 +1,4 @@
-package com.Eldar.tarjetasCredito.model;
+package com.eldar.tarjetascredito.model;
 
 public class OperationRequest {
     private String marca;

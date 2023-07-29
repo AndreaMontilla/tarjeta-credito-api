@@ -1,28 +1,34 @@
-package com.Eldar.tarjetasCredito;
+package com.eldar.tarjetascredito;
 
-import com.Eldar.tarjetasCredito.model.OperationResponse;
-import exception.ConstantsError;
-import exception.TarjetaCreditoException;
+import com.eldar.tarjetascredito.exception.ConstantsError;
+import com.eldar.tarjetascredito.exception.TarjetaCreditoException;
+import com.eldar.tarjetascredito.model.OperationResponse;
+import com.eldar.tarjetascredito.util.MarcaTarjeta;
+
 import java.time.LocalDate;
 
 public class TarjetaCredito {
-    private String marca;
-    private String numeroTarjeta;
-    private String cardholder;
-    private LocalDate fechaVencimiento;
-
+    public static final double TASA_MAXIMA = 5.0;
+    public static final double TASA_MINIMA = 0.3;
+    public static final int OPERACION_MAXIMA = 1000;
+    public static final int OPERACION_MINIMA = 0;
     // Constantes para las tasas de cada marca
     private static final double TASA_NARA = 0.5;
     private static final double TASA_AMEX = 0.1;
 
-    public TarjetaCredito(String marca, String numeroTarjeta, String cardholder, LocalDate fechaVencimiento) {
+    private MarcaTarjeta marca;
+    private String numeroTarjeta;
+    private String cardholder;
+    private LocalDate fechaVencimiento;
+
+    public TarjetaCredito(MarcaTarjeta marca, String numeroTarjeta, String cardholder, LocalDate fechaVencimiento) {
         this.marca = marca;
         this.numeroTarjeta = numeroTarjeta;
         this.cardholder = cardholder;
         this.fechaVencimiento = fechaVencimiento;
     }
 
-    public String getMarca() {
+    public MarcaTarjeta getMarca() {
         return marca;
     }
 
@@ -39,13 +45,14 @@ public class TarjetaCredito {
     }
 
     public String obtenerInformacionTarjeta() {
-        return "Marca: " + marca + "\nNúmero de Tarjeta: " + numeroTarjeta + "\nCardholder: " + cardholder
+        return "Marca: " + marca.getMarca().toUpperCase() + "\nNúmero de Tarjeta: " + numeroTarjeta + "\nCardholder: " + cardholder
                 + "\nFecha de Vencimiento: " + fechaVencimiento;
     }
 
     public boolean esOperacionValida(double montoOperacion) {
-        return montoOperacion > 0 && montoOperacion < 1000;
+        return montoOperacion > OPERACION_MINIMA && montoOperacion < OPERACION_MAXIMA;
     }
+
     public boolean esValidaParaOperar() {
         LocalDate fechaActual = LocalDate.now();
         return fechaVencimiento.isAfter(fechaActual);
@@ -55,40 +62,45 @@ public class TarjetaCredito {
         return !this.numeroTarjeta.equals(otraTarjeta.getNumeroTarjeta());
     }
 
-    public double obtenerTasa(String marca) throws IllegalArgumentException {
+    public double obtenerTasa(MarcaTarjeta marca) throws IllegalArgumentException {
+        double tasa = calcularTasa(marca);
+        if (tasa > TASA_MAXIMA) {
+            tasa = TASA_MAXIMA;
+        } else if (tasa < TASA_MINIMA) {
+            tasa = TASA_MINIMA;
+        }
+        return Math.round(tasa * 10d) / 10d;
+    }
+
+    public OperationResponse obtenerOperationResponse(double importe, MarcaTarjeta marca) throws TarjetaCreditoException {
+        if (!esOperacionValida(importe)) {
+            throw new TarjetaCreditoException(ConstantsError.CODE_ERROR_INVALID_AMOUNT);
+        }
+        double tasa = obtenerTasa(marca);
+        double importeFinal = Math.round((importe * (1 + tasa / 100)) * 10d) / 10d;
+        double recargo = importeFinal - importe;
+        return new OperationResponse(marca, tasa, recargo, importe, importeFinal);
+    }
+
+    private double calcularTasa(MarcaTarjeta marca) {
         LocalDate fechaActual = LocalDate.now();
-        Double tasa;
+        double tasa;
         // Como existe la posibilidad de seguir sumando tarjetas en el futuro, usaremos switch case
         switch (marca) {
-            case "VISA":
-                tasa = (fechaActual.getYear()%100) / (double) fechaActual.getMonthValue();
+            case VISA:
+                tasa = (fechaActual.getYear() % 100) / (double) fechaActual.getMonthValue();
                 break;
-            case "NARA":
+            case NARA:
                 tasa = fechaActual.getDayOfMonth() * TASA_NARA;
                 break;
-            case "AMEX":
+            case AMEX:
                 tasa = fechaActual.getMonthValue() * TASA_AMEX;
                 break;
             // Aca se agregan las tarjetas nuevas
             default:
                 throw new IllegalArgumentException(ConstantsError.CODE_ERROR_MISSING_BRAND.getDescripcion());
         }
-        if (tasa > 5.0){
-            tasa = 5.0;
-        } else if (tasa < 0.3){
-            tasa = 0.3;
-        }
-        return Math.round(tasa*10d)/10d;
-    }
-
-    public OperationResponse obtenerOperationResponse(double importe, String marca) throws IllegalArgumentException{
-        double tasa = obtenerTasa(marca);
-        if(!esOperacionValida(importe)){
-            throw new IllegalArgumentException(ConstantsError.CODE_ERROR_INVALID_AMOUNT.getDescripcion());
-        }
-        double importeFinal = Math.round((importe * (1 + tasa/100))*10d) / 10d;
-        double recargo = importeFinal - importe;
-        return new OperationResponse(marca, tasa, recargo, importe,importeFinal);
+        return tasa;
     }
 
 }

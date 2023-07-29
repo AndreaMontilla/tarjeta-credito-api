@@ -1,13 +1,15 @@
-package com.Eldar.tarjetasCredito.model;
+package com.eldar.tarjetascredito.model;
+
+import com.eldar.tarjetascredito.util.MarcaTarjeta;
 
 public class OperationResponse {
-    private String marca;
+    private MarcaTarjeta marca;
     private double tasaOperacion;
     private double recargo;
     private double importeInicial;
     private double importeFinal;
 
-    public OperationResponse(String marca, double tasaOperacion, double recargo, double importeInicial, double importeFinal) {
+    public OperationResponse(MarcaTarjeta marca, double tasaOperacion, double recargo, double importeInicial, double importeFinal) {
         this.marca = marca;
         this.tasaOperacion = tasaOperacion;
         this.recargo = recargo;
@@ -15,11 +17,11 @@ public class OperationResponse {
         this.importeFinal = importeFinal;
     }
 
-    public String getMarca() {
+    public MarcaTarjeta getMarca() {
         return marca;
     }
 
-    public void setMarca(String marca) {
+    public void setMarca(MarcaTarjeta marca) {
         this.marca = marca;
     }
 

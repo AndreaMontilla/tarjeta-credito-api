@@ -1,6 +1,6 @@
-package com.Eldar.tarjetasCredito.model;
+package com.eldar.tarjetascredito.model;
 
-import exception.TarjetaCreditoException;
+import com.eldar.tarjetascredito.exception.TarjetaCreditoException;
 
 public class StandardRestResponse<OperationResponse> {
     private OperationResponse data;

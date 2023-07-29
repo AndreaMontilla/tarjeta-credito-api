@@ -1,4 +1,4 @@
-package com.Eldar.tarjetasCredito;
+package com.eldar.tarjetascredito;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
