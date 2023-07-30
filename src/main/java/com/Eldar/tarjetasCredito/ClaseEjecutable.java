@@ -10,8 +10,8 @@ import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 
-public class Main {
-    private static final Logger log = LoggerFactory.getLogger(Main.class);
+public class ClaseEjecutable {
+    private static final Logger log = LoggerFactory.getLogger(ClaseEjecutable.class);
     private static final TarjetaCreditoService service = new TarjetaCreditoService();
 
     public static void main(String[] args) {
